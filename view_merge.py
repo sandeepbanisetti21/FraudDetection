@@ -37,8 +37,8 @@ def mergeViews(postgresConnection, mongodbClient):
     createCSVFromMongoView(mongodbClient)
     copyQuery = "COPY mongo_user_view FROM '" + getAbsolutePath() + "/test.csv' WITH (FORMAT csv);"
     executePostgresQuery(postgresConnection, copyQuery)
-    viewQuery = 'CREATE MATERIALIZED VIEW user_stats_view AS SELECT a.*,b.* from pg_user_view left join (select authcount,workcount,customer_id.lastaudittime,lastlocation from mongo_user_view) b on b.customer_id = a.id'
-    #executePostgresQuery(postgresConnection,viewQuery)
+    viewQuery = 'CREATE MATERIALIZED VIEW user_stats_view AS SELECT a.*,b.* from pg_user_view as a left join (select authcount,workcount,customer_id.lastaudittime,lastlocation from mongo_user_view) b on b.customer_id = a.id'
+    executePostgresQuery(postgresConnection,viewQuery)
 
 def main():
     pgConn = getPostgresCursor()
