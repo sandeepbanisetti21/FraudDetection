@@ -19,6 +19,5 @@ def getSqlAlchemySession():
 def getMongoDbClient():
     print('created MongoDbClient')
     client = MongoClient(cp.mongoDbUrl)
-    mongodbClient = client['test']
-    return mongodbClient
+    return client
 

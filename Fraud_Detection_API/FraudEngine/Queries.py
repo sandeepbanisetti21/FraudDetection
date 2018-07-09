@@ -1,10 +1,10 @@
 
 def getSeclectPgUserView(count):
-    SELECT_FROM_PG_USER_VIEW = 'Select * from PG_USER_VIEW where ticket_count is not null limit '
+    SELECT_FROM_PG_USER_VIEW = 'Select * from user_stats_view where ticket_count is not null limit '
     return SELECT_FROM_PG_USER_VIEW+str(count)
 
 def getSelectPgUserById(id):
-    SELECT_FROM_PG_USER_VIEW = 'Select * from PG_USER_VIEW WHERE ID = '
+    SELECT_FROM_PG_USER_VIEW = 'Select * from user_stats_view WHERE ID = '
     return SELECT_FROM_PG_USER_VIEW + str(id)
 
 

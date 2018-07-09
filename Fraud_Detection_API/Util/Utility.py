@@ -1,6 +1,11 @@
 import inspect
 from psycopg2.extras import DictCursor
 import json,ast
+from math import sqrt
+
+from Fraud_Detection_API.FraudEngine import Queries
+from Fraud_Detection_API.Util import ConfigurationParser
+
 
 def methodsWithDecorator(cls, decoratorName):
     methods = []
@@ -24,3 +29,27 @@ def getCursor(connection):
 def getJsonAsDictionary(jsonData):
     jsonDataAsLiteral = ast.literal_eval(json.dumps(jsonData))
     return jsonDataAsLiteral
+
+
+def getDistanceBetweenPoints(point1,point2):
+    vect_x = point2.x - point1.x
+    vect_y = point2.y - point1.y
+    return sqrt(vect_x ** 2 + vect_y ** 2)
+
+
+def getOneUserData(id):
+    dictCursor = getDictCursor(ConfigurationParser.config.getPostgresClient())
+    dictCursor.execute(Queries.getSelectPgUserById(id))
+    dataItem = dictCursor.fetchone()
+    return dataItem
+
+def getSingleProjectData(id):
+    dictCursor = getDictCursor(ConfigurationParser.config.getPostgresClient())
+    dictCursor.execute(Queries.getSelectPgUserById(id))
+    dataItem = dictCursor.fetchall()
+    return dataItem
+
+def getTimeDifference(time1,time2):
+    from datetime import datetime,date
+    delta = time1 - time2
+    return delta / 3600.0

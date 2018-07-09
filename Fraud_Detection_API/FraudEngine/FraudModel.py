@@ -25,11 +25,11 @@ def detectFraudProjectLevel(jsonRequest):
     dataItems = dictCursor.fetchall()
     apiResponse = []
     for data in dataItems:
-        usersReport = dict()
-        usersReport['id'] = data['id']
-        ruleList = ProjectUniversalRules.getUserUniversalRuleData(data)
-        usersReport['rules'] = ruleList
-        apiResponse.append(usersReport)
+        projectReport = dict()
+        projectReport['id'] = data['id']
+        ruleList = ProjectUniversalRules.getProjectUniversalRuleData(data)
+        projectReport['rules'] = ruleList
+        apiResponse.append(projectReport)
     return apiResponse
 
 
@@ -38,9 +38,7 @@ def refreshMaterializedView():
     return 'OK'
 
 def detectFraudSingleUser(jsonRequest):
-    dictCursor = Utility.getDictCursor(ConfigurationParser.config.getPostgresClient())
-    dictCursor.execute(Queries.getSelectPgUserById(jsonRequest['user']))
-    dataItem = dictCursor.fetchone()
+    dataItem = Utility.getOneUserData(jsonRequest['user'])
     apiResponse = []
     usersReport = dict()
     usersReport['id'] = dataItem['id']
@@ -50,15 +48,14 @@ def detectFraudSingleUser(jsonRequest):
     return apiResponse
 
 def detectFraudSingleProject(jsonRequest):
-    dictCursor = Utility.getDictCursor(ConfigurationParser.config.getPostgresClient())
-    dictCursor.execute(Queries.getSelectPgUserById(jsonRequest['id']))
-    dataItem = dictCursor.fetchone()
+    dataItems =  Utility.getSingleProjectData(jsonRequest['id'])
     apiResponse = []
-    usersReport = dict()
-    usersReport['id'] = dataItem['id']
-    ruleList = ProjectUniversalRules.getUserUniversalRuleData(dataItem)
-    usersReport['rules'] = ruleList
-    apiResponse.append(usersReport)
+    for dataItem in dataItems:
+        projectReport = dict()
+        projectReport['id'] = dataItem['id']
+        ruleList = ProjectUniversalRules.getProjectUniversalRuleData(dataItem)
+        projectReport['rules'] = ruleList
+        apiResponse.append(projectReport)
     return apiResponse
 
 def detectFraudOrgLevel(jsonRequest):
