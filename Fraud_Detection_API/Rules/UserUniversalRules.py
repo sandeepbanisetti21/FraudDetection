@@ -22,7 +22,7 @@ AUTH_COUNT = 'authcount'
 WORK_COUNT = 'workcount'
 LAST_AUDIT_TIME = 'lastaudittime'
 LAST_LOCATION = 'lastlocation'
-NUM_OF_CLUSTERS = 'clusters'
+NUM_OF_CLUSTERS = 'cluster_count'
 CENTROID = 'centroid'
 
 
@@ -176,8 +176,8 @@ def getUserUniversalRuleData(data):
     ruleList.append(processOutput(data['id'], ruleName, value, redFlag))
     ruleName, value, redFlag = clusterCount(data)
     ruleList.append(processOutput(data['id'], ruleName, value, redFlag))
-    ruleName, value, redFlag = processClusterData(data)
-    ruleList.append(processOutput(data['id'], ruleName, value, redFlag))
+    #ruleName, value, redFlag = processClusterData(data)
+    #ruleList.append(processOutput(data['id'], ruleName, value, redFlag))
     ruleName, value, redFlag = authriazationcount(data)
     ruleList.append(processOutput(data['id'], ruleName, value, redFlag))
     ruleName, value, redFlag = workCount(data)

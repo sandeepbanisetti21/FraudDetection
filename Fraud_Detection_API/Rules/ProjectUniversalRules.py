@@ -1,41 +1,46 @@
 from shapely.geometry import Point
 
-from Fraud_Detection_API.Util.Utility import getDistanceBetweenPoints,getSingleProjectData,getTimeDifference
+from Fraud_Detection_API.Util.Utility import getDistanceBetweenPoints,getOneUserData,getTimeDifference
 
-USER_ID = 'user_id'
+USER_ID = 'assigned_customer_id'
 ACCEPTED_TICKET_COUNT='accepted_ticket_count'
 TICKET_COUNT='ticket_count'
-LATEST_GIG_LOCATION='latest_gig_location'
-UPLOADED_LOCATION = 'uploaded_location'
 TIME_TAKEN = 'time_taken'
-NUM_QUESTIONS_ANSWERED = 'question_answered_count'
+NUM_QUESTIONS_ANSWERED = 'data_item_count'
 NUM_QUESTIONS_ASKED = 'questions_asked_count'
-ASSIGNMENT_TYPE = 'assignemnet_type'
-PROJECT_LOCATION = 'project_location'
-TICKET_TIME_ESTIMATE = 'project_time_estimate'
+ASSIGNMENT_TYPE = 'status'
+TICKET_TIME_ESTIMATE = 'time_estimate'
 CENTROID = 'centroid'
+
+TICKET_LATITUDE = 'ticket_latitude'
+TICKET_LONGITUDE = 'ticket_longitude'
+USER_LATITUDE = 'latitude'
+USER_LONGITUDE = 'longitude'
+
 
 userData = None
 
 def projectLocation(data):
+    print('inside project location')
     ruleName = 'Project Location'
-    uploadedLocation = data[UPLOADED_LOCATION]
-    projectLocation = data[PROJECT_LOCATION]
-    if uploadedLocation is not None and projectLocation is not None:
-        ratio = getDistanceBetweenPoints(Point(uploadedLocation),Point(projectLocation))
-        if ratio < 5:
-           return ruleName,ratio,False
+    uploadedLocation = (data[USER_LATITUDE],data[USER_LONGITUDE])
+    projectLocation =  (data[TICKET_LATITUDE],data[TICKET_LONGITUDE])
+    distance = getDistanceBetweenPoints(uploadedLocation,projectLocation)
+
+    if distance is not None:
+        if distance < 5:
+            return ruleName,distance,False
         else:
-            return ruleName,ratio,True
-    else:
-        return ruleName,0,False
+            return ruleName,distance,True
+    return ruleName,0,False
+
 
 def centroidDistance(data):
     ruleName = 'Centroid Distance'
-    uploadedLocation = data[UPLOADED_LOCATION]
+    uploadedLocation = (data[USER_LATITUDE],data[USER_LONGITUDE])
     centroid = userData[CENTROID]
     if uploadedLocation is not None and centroid is not None:
-        ratio = getDistanceBetweenPoints(Point(uploadedLocation), Point(centroid))
+        ratio = getDistanceBetweenPoints(uploadedLocation, Point(centroid))
         if ratio < 5:
             return ruleName, ratio, False
         else:
@@ -44,7 +49,11 @@ def centroidDistance(data):
         return ruleName, 0, False
 
 def approvedTickets(data):
+
     ruleName = 'Approved Ticket Count'
+    if userData is None:
+        return ruleName, 0, False
+
     totalTickets = userData[TICKET_COUNT]
     approvedTicketCount = userData[ACCEPTED_TICKET_COUNT]
     if totalTickets is not None and approvedTicketCount is not None:
@@ -85,18 +94,21 @@ def questions(data):
 
 def getProjectUniversalRuleData(data):
     global userData
-    userData = getSingleProjectData(data[USER_ID])
+
+    if data[USER_ID] is not None:
+        userData = getOneUserData(data[USER_ID])
+
     ruleList = []
     ruleName,value,redFlag = projectLocation(data)
     ruleList.append(processOutput(data['id'],ruleName,value,redFlag))
-    ruleName, value, redFlag = centroidDistance(data)
-    ruleList.append(processOutput(data['id'],ruleName,value,redFlag))
+    #ruleName, value, redFlag = centroidDistance(data)
+    #ruleList.append(processOutput(data['id'],ruleName,value,redFlag))
     ruleName, value, redFlag = approvedTickets(data)
     ruleList.append(processOutput(data['id'], ruleName, value, redFlag))
-    ruleName, value, redFlag = timeEstimate(data)
-    ruleList.append(processOutput(data['id'], ruleName, value, redFlag))
-    ruleName, value, redFlag =  questions(data)
-    ruleList.append(processOutput(data['id'], ruleName, value, redFlag))
+    #ruleName, value, redFlag = timeEstimate(data)
+    #ruleList.append(processOutput(data['id'], ruleName, value, redFlag))
+    #ruleName, value, redFlag =  questions(data)
+    #ruleList.append(processOutput(data['id'], ruleName, value, redFlag))
     return ruleList
 
 def processOutput(id, ruleName, value, redflag):

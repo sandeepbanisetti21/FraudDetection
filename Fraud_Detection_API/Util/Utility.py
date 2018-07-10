@@ -4,7 +4,7 @@ import json,ast
 from math import sqrt
 
 from Fraud_Detection_API.FraudEngine import Queries
-from Fraud_Detection_API.Util import ConfigurationParser
+import ConfigurationParser
 
 
 def methodsWithDecorator(cls, decoratorName):
@@ -32,12 +32,16 @@ def getJsonAsDictionary(jsonData):
 
 
 def getDistanceBetweenPoints(point1,point2):
-    vect_x = point2.x - point1.x
-    vect_y = point2.y - point1.y
+    if point1[0] is None or point1[1] is None or point2[0] is None or point2[1] is None:
+        return None
+
+    vect_x = float(point2[0]) - float(point1[0])
+    vect_y = float(point2[1]) - float(point1[1])
     return sqrt(vect_x ** 2 + vect_y ** 2)
 
 
 def getOneUserData(id):
+    print('inside one user data')
     dictCursor = getDictCursor(ConfigurationParser.config.getPostgresClient())
     dictCursor.execute(Queries.getSelectPgUserById(id))
     dataItem = dictCursor.fetchone()
@@ -46,7 +50,7 @@ def getOneUserData(id):
 def getSingleProjectData(id):
     dictCursor = getDictCursor(ConfigurationParser.config.getPostgresClient())
     dictCursor.execute(Queries.getSelectPgUserById(id))
-    dataItem = dictCursor.fetchall()
+    dataItem = dictCursor.fetchone()
     return dataItem
 
 def getTimeDifference(time1,time2):

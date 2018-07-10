@@ -29,6 +29,7 @@ def detectFraudProjectLevel(jsonRequest):
         projectReport['id'] = data['id']
         ruleList = ProjectUniversalRules.getProjectUniversalRuleData(data)
         projectReport['rules'] = ruleList
+        projectReport['assigned_user'] = data['assigned_customer_id']
         apiResponse.append(projectReport)
     return apiResponse
 
@@ -55,6 +56,7 @@ def detectFraudSingleProject(jsonRequest):
         projectReport['id'] = dataItem['id']
         ruleList = ProjectUniversalRules.getProjectUniversalRuleData(dataItem)
         projectReport['rules'] = ruleList
+        projectReport['assigned_user'] = data['assigned_customer_id']
         apiResponse.append(projectReport)
     return apiResponse
 
