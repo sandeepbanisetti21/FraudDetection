@@ -13,8 +13,7 @@ def getPostgresClient():
 def getSqlAlchemySession():
     print('created  sql alchemy session')
     sqlalchemyEngine =  create_engine(cp.postgresUrl)
-    session = sessionmaker(bind=sqlalchemyEngine)
-    return session()
+    return sqlalchemyEngine
 
 def getMongoDbClient():
     print('created MongoDbClient')

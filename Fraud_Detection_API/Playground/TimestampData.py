@@ -66,7 +66,7 @@ def analyzeTimeData(timestampdata, timezonedata):
     timestamp_df = result.merge(offcountDataFrame, on='ticket_id')
 
     print(timestamp_df)
-    
+
     #plt.scatter(offcountDataFrame['ticket_id'], offcountDataFrame['timezone_timestamp'])
     #plt.show()  # Depending on whether you use IPython or interactive mode, etc.
 

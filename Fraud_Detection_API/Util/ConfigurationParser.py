@@ -42,7 +42,8 @@ class Configurations():
 config = Configurations()
 def configure():
     global config
-    #config.setMongoClient()
-    #config.setSqlAlchemySession()
+    config.setMongoClient()
+    config.setSqlAlchemySession()
     config.setPostgresClient()
+    return config
     #config.setUniversalUserRules()

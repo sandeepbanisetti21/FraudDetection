@@ -129,20 +129,6 @@ def getDistanceDataFrameForWave(waveId):
 
     return df
 
-
-def getTimeDataFrameForWave(waveId):
-    wave_match = {}
-    project_match = {}
-    wave_match['organization_subscription_waves.wave_id'] = ObjectId(waveId)
-    project_match['ticket_id'] = "$ticket_id",
-    project_match['data_item_timestamp'] = "$data_item_timestamp",
-
-    df = pd.DataFrame(list(dbc.getMonogClient().data_items.aggregate(
-        dbc.create_mongo_aggreagate_pipeline(match=wave_match, project=project_match))))
-
-    return df
-
-
 def getAuditEventsDataFrame(startTime, endTime):
     wave_match = {}
     timestampquery = {}
